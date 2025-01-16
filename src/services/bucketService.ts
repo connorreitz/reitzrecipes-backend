@@ -15,4 +15,3 @@ export const getTemplate = async () => {
     console.error(err);
   }
 };
-
