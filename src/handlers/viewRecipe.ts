@@ -1,9 +1,9 @@
 import middy from "@middy/core";
 import { APIGatewayEvent, APIGatewayProxyResult, Context } from "aws-lambda";
-import { getTableData } from "../services/dyanmoService";
+import { getRecipeData } from "../services/dynamo";
 
-const viewRecipe = async (event: APIGatewayEvent, context: Context) => {
-    const access = await getTableData(event.pathParameters!['id']!)
+async function viewRecipe(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+    const access = await getRecipeData(event.pathParameters!['id']!)
     if (access) {
         const response: APIGatewayProxyResult = {
             statusCode: 200,

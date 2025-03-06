@@ -24,11 +24,16 @@ Resources:
       Description: A simple example includes a HTTP get method to get all items from
         a DynamoDB table.
       Events:
-        Api:
+        GetRecipe:
           Type: Api
           Properties:
             Path: /recipe/{id}
             Method: GET
+        Login:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: POST
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
