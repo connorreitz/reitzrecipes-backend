@@ -34,6 +34,11 @@ Resources:
           Properties:
             Path: /login
             Method: POST
+        PostRecipe:
+          Type: Api
+          Properties:
+            Path: /recipe/{id}
+            Method: POST
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
