@@ -37,5 +37,5 @@ async function viewRecipe(event: APIGatewayEvent, context: Context): Promise<API
     }
 }
 
-export const viewRecipeHandler = middy(viewRecipe)
+export const viewRecipeHandler = middy()
     .handler(viewRecipe)
