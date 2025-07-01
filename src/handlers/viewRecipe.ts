@@ -3,19 +3,39 @@ import { APIGatewayEvent, APIGatewayProxyResult, Context } from "aws-lambda";
 import { getRecipeData } from "../services/dynamo";
 
 async function viewRecipe(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
-    const access = await getRecipeData(event.pathParameters!['id']!)
-    if (access) {
-        const response: APIGatewayProxyResult = {
-            statusCode: 200,
-            body: JSON.stringify(access.Item)
+    try {
+        const id = event.pathParameters?.['id'];
+        if (!id) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'Recipe ID is required' })
+            };
         }
 
-        return response
+        const access = await getRecipeData(id);
+        
+        if (access.Item) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify(access.Item)
+            };
+        }
+
+        return {
+            statusCode: 404,
+            body: JSON.stringify({ error: 'Recipe not found' })
+        };
+    } catch (error) {
+        console.error('Error viewing recipe:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Internal server error' })
+        };
+    } finally {
+        // Clean up any resources if needed
+        context.callbackWaitsForEmptyEventLoop = false;
     }
-    
-    
-    return {statusCode: 404, body: 'no info found'}
 }
 
-export const viewReciperHandler = middy()
+export const viewRecipeHandler = middy(viewRecipe)
     .handler(viewRecipe)

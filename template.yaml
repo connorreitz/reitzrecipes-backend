@@ -39,6 +39,21 @@ Resources:
           Properties:
             Path: /recipe/{id}
             Method: POST
+        GetRecipeList:
+          Type: Api
+          Properties:
+            Path: /recipes
+            Method: GET
+        UploadImage:
+          Type: Api
+          Properties:
+            Path: /upload-image
+            Method: POST
+        GetImageUrl:
+          Type: Api
+          Properties:
+            Path: /image/{id}
+            Method: GET
     Metadata:
       BuildMethod: esbuild
       BuildProperties:

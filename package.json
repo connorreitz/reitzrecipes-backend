@@ -3,17 +3,26 @@
   "description": "reitzrecipes-description",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start:local": "sam build && sam local start-api --region us-east-2"
+    "start:local": "npm run build:sam && npm run run:sam",
+    "build:sam": "sam build && cp .env .aws-sam/build/ReitzRecipesBackend",
+    "run:sam": "set NODE_ENV=localhost && sam build --use-container --container-env-var-file ./env.json && cp .env .aws-sam/build/ReitzRecipesBackend && sam local start-api --region us-east-2"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.613.0",
-    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/client-s3": "^3.613.0",
+    "@aws-sdk/credential-providers": "^3.835.0",
     "@aws-sdk/lib-dynamodb": "3.613.0",
-    "@middy/core": "^5.3.2",
+    "@aws-sdk/s3-request-presigner": "^3.613.0",
+    "@middy/core": "^6.0.0",
     "@middy/http-cors": "^6.0.0",
     "@middy/http-error-handler": "^6.1.5",
     "@middy/http-router": "^5.3.2",
+    "@middy/http-json-body-parser": "^6.0.0",
+    "@middy/http-event-normalizer": "^6.0.0",
+    "aws-sdk": "^2.1477.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "esbuild": "^0.20.2",
@@ -25,6 +34,7 @@
   "devDependencies": {
     "@nx/node": "^17.2.8",
     "@types/aws-lambda": "^8.10.136",
+    "@types/bcryptjs": "^2.4.6",
     "@types/http-errors": "^2.0.4",
     "@types/jsonwebtoken": "^9.0.9"
   }

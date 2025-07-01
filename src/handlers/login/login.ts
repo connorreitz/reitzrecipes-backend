@@ -3,24 +3,26 @@ import createError from 'http-errors'
 import { getLoginData } from "../../services/dynamo";
 import jwt from 'jsonwebtoken'
 import middy from "@middy/core";
-import 'dotenv/config'
-
-const SECRET_KEY = process.env.SECRET_KEY ?? 'default'
+import bcrypt from 'bcryptjs';
 
 async function login(event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> {
+
+    const SECRET_KEY = process.env.SECRET_KEY
+
     if (!event.body) {
         throw createError(400, 'Bad request')
     }
 
     if (!SECRET_KEY) {
-        throw createError(500, 'Internal Server Error Key')
+        throw createError(500, 'Internal Server Error - Secret Key')
     }
 
     const {username, password} = JSON.parse(event.body)
 
     try {
         const storedPassword = getLoginData(username)
-        if (password === (await storedPassword).Item?.['password']) {
+        const isPasswordValid = await bcrypt.compare(password, (await storedPassword).Item?.['password'])
+        if (isPasswordValid) {
             const token = jwt.sign(
                 {userId: username, canPost: true},
                 SECRET_KEY,
@@ -40,7 +42,7 @@ async function login(event: APIGatewayEvent, context: Context): Promise<APIGatew
         }
 
     } catch (e) {
-        throw createError(500, 'Error with login: ', e)
+        throw createError(500, `Error with login: ${e}`)
     }
 
 }

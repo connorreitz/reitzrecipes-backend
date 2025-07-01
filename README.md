@@ -16,6 +16,20 @@ To get started, see the following:
 
 * [CLion](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
 * [GoLand](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+# S3 Configuration
+S3_BUCKET_NAME=your-bucket-name
+AWS_REGION=your-region
+
+# Lambda Configuration
+SECRET_KEY=your-secret-key
+```
+
 * [IntelliJ](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
 * [WebStorm](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
 * [Rider](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)

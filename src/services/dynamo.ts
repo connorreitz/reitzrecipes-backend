@@ -1,24 +1,27 @@
-import { AttributeValue, ConditionalOperator, DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { AttributeValue, DynamoDBClient, PutItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { Ingredient, Recipe } from "../model/recipe";
-import { build } from "esbuild";
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
+const getTableData = async (table: string, id: string, key: PartitionKeys): Promise<any> => {
+    try {
+        const command = new GetCommand({
+            TableName: table,
+            Key: {
+                [key]: id
+            }
+        });
 
-const getTableData = async (table: string, id: string, key: PartitionKeys) => {
-    const command = new GetCommand({
-        TableName: table,
-      Key: {
-        [key]: id,
-      },
-    });
-  
-    const response = await docClient.send(command);
-    console.log(response.Item);
+        const response = await docClient.send(command);
+        console.log(response.Item);
     return response;
-  };
+    } catch (error) {
+        console.error('Error fetching data from DynamoDB:', error);
+        throw error;
+    }
+};  
 
 export const getRecipeData = async (id: string) => {
   return getTableData('reitz-recipes-data', id, PartitionKeys.RECIPE_DATA)
@@ -64,6 +67,16 @@ export const writeRecipe = async (resource: string, recipe: Recipe) => {
 	await docClient.send(command)
 }
 
+export async function getListOfItems(tableName: string, n: number) {
+	const command = new ScanCommand({
+		TableName: tableName,
+		Limit: n
+	})
+
+	const response = await docClient.send(command);
+    return response.Items;
+}
+
 function buildIngredientList(ingredients: Array<Ingredient>) {
 	const test = ingredients.map((ingredient) => {
 		return {
@@ -81,7 +94,6 @@ function buildIngredientList(ingredients: Array<Ingredient>) {
 		}
 		
 	})
-	console.log('test: ', test)
 	return test
 }
 
